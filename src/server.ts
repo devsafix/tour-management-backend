@@ -5,12 +5,13 @@ import dotenv from "dotenv";
 import app from "./app";
 import { Server } from "http";
 import { envVariables } from "./app/config/env";
+import { seedSuperAdmin } from "./app/utils/seedSuperAdmin";
 
 dotenv.config();
 const port = envVariables.PORT || 5000;
 let server: Server;
 
-async function main() {
+async function startServer() {
   try {
     await mongoose.connect(envVariables.DATABASE_URL);
     console.log("✅ Database connected");
@@ -22,7 +23,10 @@ async function main() {
   }
 }
 
-main();
+(async () => {
+  await startServer();
+  await seedSuperAdmin();
+})();
 
 process.on("unhandledRejection", (err) => {
   console.log("Unhandled Rejection Detected. Server Shutting Down ...", err);
