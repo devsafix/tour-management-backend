@@ -1,10 +1,13 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import AppError from "../../errorHelpers/AppError";
 import { IUser } from "../user/user.interface";
 import { User } from "../user/user.model";
 import httpStatus from "http-status-codes";
 import bcryptjs from "bcryptjs";
-import { generateToken } from "../../utils/jwt";
-import { envVariables } from "../../config/env";
+import {
+  createNewAccessTokenWithRefreshToken,
+  createUserTokens,
+} from "../../utils/userTokens";
 
 const credentialsLoginService = async (payload: Partial<IUser>) => {
   const { email, password } = payload;
@@ -30,17 +33,28 @@ const credentialsLoginService = async (payload: Partial<IUser>) => {
     role: isUserExist.role,
   };
 
-  const accessToken = generateToken(
-    jwtPayload,
-    envVariables.JWT_ACCESS_SECRET,
-    envVariables.JWT_ACCESS_EXPIRES
+  const userTokens = createUserTokens(isUserExist);
+
+  const { password: pass, ...rest } = isUserExist.toObject();
+
+  return {
+    accessToken: userTokens.accessToken,
+    refreshToken: userTokens.refreshToken,
+    user: rest,
+  };
+};
+
+const getNewAccessTokenService = async (refreshToken: string) => {
+  const newAccessToken = await createNewAccessTokenWithRefreshToken(
+    refreshToken
   );
 
   return {
-    accessToken,
+    accessToken: newAccessToken,
   };
 };
 
 export const AuthServices = {
   credentialsLoginService,
+  getNewAccessTokenService,
 };
