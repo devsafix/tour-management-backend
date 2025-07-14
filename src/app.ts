@@ -6,12 +6,14 @@ import notFound from "./app/middlewares/notFound";
 import cookieParser from "cookie-parser";
 import passport from "passport";
 import expressSession from "express-session";
+import { envVariables } from "./app/config/env";
+import "./app/config/passport";
 
 const app: Application = express();
 
 app.use(
   expressSession({
-    secret: "",
+    secret: envVariables.EXPRESS_SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
   })
