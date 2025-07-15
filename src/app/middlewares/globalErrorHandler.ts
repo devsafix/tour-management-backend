@@ -15,6 +15,11 @@ export const globalErrorHandler = (
   res: Response,
   next: NextFunction
 ) => {
+  if (envVariables.NODE_ENV === "development") {
+    // eslint-disable-next-line no-console
+    console.log(err);
+  }
+
   let errorSources: TErrorSources[] = [];
   let statusCode = 500;
   let message = "Something Went Wrong!!";
@@ -64,7 +69,8 @@ export const globalErrorHandler = (
   res.status(statusCode).json({
     success: false,
     message,
-    err,
+    errorSources,
+    err: envVariables.NODE_ENV === "development" ? err : null,
     stack: envVariables.NODE_ENV === "development" ? err.stack : null,
   });
 };
