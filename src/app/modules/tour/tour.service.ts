@@ -60,9 +60,11 @@ const createTourType = async (payload: ITourType) => {
 
   return await TourType.create({ name });
 };
+
 const getAllTourTypes = async () => {
   return await TourType.find();
 };
+
 const updateTourType = async (id: string, payload: ITourType) => {
   const existingTourType = await TourType.findById(id);
   if (!existingTourType) {
@@ -74,6 +76,7 @@ const updateTourType = async (id: string, payload: ITourType) => {
   });
   return updatedTourType;
 };
+
 const deleteTourType = async (id: string) => {
   const existingTourType = await TourType.findById(id);
   if (!existingTourType) {
