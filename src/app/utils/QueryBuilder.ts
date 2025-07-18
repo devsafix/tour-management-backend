@@ -18,7 +18,7 @@ export class QueryBuilder<T> {
       delete filter[field];
     }
 
-    this.modelQuery = this.modelQuery.find(filter); // Tour.find().find(filter)
+    this.modelQuery = this.modelQuery.find(filter);
 
     return this;
   }
