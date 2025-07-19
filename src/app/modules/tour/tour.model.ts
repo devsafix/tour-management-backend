@@ -29,7 +29,7 @@ const tourSchema = new Schema<ITour>(
     excluded: { type: [String], default: [] },
     amenities: { type: [String], default: [] },
     tourPlan: { type: [String], default: [] },
-    maxGuest: { type: Number },
+    maxGuests: { type: Number },
     minAge: { type: Number },
     division: {
       type: Schema.Types.ObjectId,
