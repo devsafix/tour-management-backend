@@ -13,7 +13,7 @@ export const createTourZodSchema = z.object({
   excluded: z.array(z.string()).optional(),
   amenities: z.array(z.string()).optional(),
   tourPlan: z.array(z.string()).optional(),
-  maxGuest: z.number().optional(),
+  maxGuests: z.number().optional(),
   minAge: z.number().optional(),
   division: z.string(),
   departureLocation: z.string().optional(),
