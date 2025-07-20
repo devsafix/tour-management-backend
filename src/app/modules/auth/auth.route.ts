@@ -4,17 +4,17 @@ import { Role } from "../user/user.interface";
 import { checkAuth } from "../../middlewares/checkAuth";
 import passport from "passport";
 
-const router = Router();
+export const AuthRoutes = Router();
 
-router.post("/login", AuthControllers.credentialsLogin);
-router.post("/refresh-token", AuthControllers.getNewAccessToken);
-router.post("/logout", AuthControllers.logout);
-router.post(
+AuthRoutes.post("/login", AuthControllers.credentialsLogin);
+AuthRoutes.post("/refresh-token", AuthControllers.getNewAccessToken);
+AuthRoutes.post("/logout", AuthControllers.logout);
+AuthRoutes.post(
   "/reset-password",
   checkAuth(...Object.values(Role)),
   AuthControllers.resetPassword
 );
-router.get(
+AuthRoutes.get(
   "/google",
   async (req: Request, res: Response, next: NextFunction) => {
     const redirect = req.query.redirect || "/";
@@ -24,10 +24,8 @@ router.get(
     })(req, res, next);
   }
 );
-router.get(
+AuthRoutes.get(
   "/google/callback",
   passport.authenticate("google", { failureRedirect: "/login" }),
   AuthControllers.googleCallback
 );
-
-export const AuthRoutes = router;

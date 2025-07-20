@@ -9,52 +9,50 @@ import {
   updateTourZodSchema,
 } from "./tour.validation";
 
-const router = express.Router();
+export const TourRoutes = express.Router();
 
 /* ------------------ TOUR TYPE ROUTES -------------------- */
-router.get("/tour-types", TourController.getAllTourTypes);
+TourRoutes.get("/tour-types", TourController.getAllTourTypes);
 
-router.post(
+TourRoutes.post(
   "/create-tour-type",
   checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
   validateRequest(createTourTypeZodSchema),
   TourController.createTourType
 );
 
-router.patch(
+TourRoutes.patch(
   "/tour-types/:id",
   checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
   validateRequest(createTourTypeZodSchema),
   TourController.updateTourType
 );
 
-router.delete(
+TourRoutes.delete(
   "/tour-types/:id",
   checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
   TourController.deleteTourType
 );
 
 /* --------------------- TOUR ROUTES ---------------------- */
-router.get("/", TourController.getAllTours);
+TourRoutes.get("/", TourController.getAllTours);
 
-router.post(
+TourRoutes.post(
   "/create",
   checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
   validateRequest(createTourZodSchema),
   TourController.createTour
 );
 
-router.patch(
+TourRoutes.patch(
   "/:id",
   checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
   validateRequest(updateTourZodSchema),
   TourController.updateTour
 );
 
-router.delete(
+TourRoutes.delete(
   "/:id",
   checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
   TourController.deleteTour
 );
-
-export const TourRoutes = router;
