@@ -52,6 +52,6 @@ const sslPaymentInit = async (payload: ISSLCommerz) => {
   }
 };
 
-export const SSLService = {
+export const SSLServices = {
   sslPaymentInit,
 };
