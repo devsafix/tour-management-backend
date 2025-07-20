@@ -40,6 +40,7 @@ const initPayment = async (bookingId: string) => {
     paymentUrl: sslPayment.GatewayPageURL,
   };
 };
+
 const successPayment = async (query: Record<string, string>) => {
   const session = await Booking.startSession();
   session.startTransaction();
@@ -50,7 +51,7 @@ const successPayment = async (query: Record<string, string>) => {
       {
         status: PAYMENT_STATUS.PAID,
       },
-      { new: true, runValidators: true, session: session }
+      { new: true, runValidators: true, session }
     );
 
     await Booking.findByIdAndUpdate(
@@ -68,6 +69,7 @@ const successPayment = async (query: Record<string, string>) => {
     throw error;
   }
 };
+
 const failPayment = async (query: Record<string, string>) => {
   const session = await Booking.startSession();
   session.startTransaction();
@@ -96,6 +98,7 @@ const failPayment = async (query: Record<string, string>) => {
     throw error;
   }
 };
+
 const cancelPayment = async (query: Record<string, string>) => {
   const session = await Booking.startSession();
   session.startTransaction();

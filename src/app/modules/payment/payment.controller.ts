@@ -7,6 +7,7 @@ import { envVariables } from "../../config/env";
 const initPayment = catchAsync(async (req: Request, res: Response) => {
   const bookingId = req.params.bookingId;
   const result = await PaymentServices.initPayment(bookingId as string);
+
   sendResponse(res, {
     statusCode: 201,
     success: true,
@@ -14,6 +15,7 @@ const initPayment = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+
 const successPayment = catchAsync(async (req: Request, res: Response) => {
   const query = req.query;
   const result = await PaymentServices.successPayment(
@@ -26,6 +28,7 @@ const successPayment = catchAsync(async (req: Request, res: Response) => {
     );
   }
 });
+
 const failPayment = catchAsync(async (req: Request, res: Response) => {
   const query = req.query;
   const result = await PaymentServices.failPayment(
@@ -38,6 +41,7 @@ const failPayment = catchAsync(async (req: Request, res: Response) => {
     );
   }
 });
+
 const cancelPayment = catchAsync(async (req: Request, res: Response) => {
   const query = req.query;
   const result = await PaymentServices.cancelPayment(
