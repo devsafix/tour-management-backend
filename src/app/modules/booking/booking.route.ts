@@ -19,31 +19,31 @@ BookingRoutes.post(
   BookingController.createBooking
 );
 
-// api/v1/booking
-BookingRoutes.get(
-  "/",
-  checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
-  BookingController.getAllBookings
-);
+// // api/v1/booking
+// BookingRoutes.get(
+//   "/",
+//   checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
+//   BookingController.getAllBookings
+// );
 
-// api/v1/booking/my-bookings
-BookingRoutes.get(
-  "/my-bookings",
-  checkAuth(...Object.values(Role)),
-  BookingController.getUserBookings
-);
+// // api/v1/booking/my-bookings
+// BookingRoutes.get(
+//   "/my-bookings",
+//   checkAuth(...Object.values(Role)),
+//   BookingController.getUserBookings
+// );
 
-// api/v1/booking/bookingId
-BookingRoutes.get(
-  "/:bookingId",
-  checkAuth(...Object.values(Role)),
-  BookingController.getSingleBooking
-);
+// // api/v1/booking/bookingId
+// BookingRoutes.get(
+//   "/:bookingId",
+//   checkAuth(...Object.values(Role)),
+//   BookingController.getSingleBooking
+// );
 
-// api/v1/booking/bookingId/status
-BookingRoutes.patch(
-  "/:bookingId/status",
-  checkAuth(...Object.values(Role)),
-  validateRequest(updateBookingStatusZodSchema),
-  BookingController.updateBookingStatus
-);
+// // api/v1/booking/bookingId/status
+// BookingRoutes.patch(
+//   "/:bookingId/status",
+//   checkAuth(...Object.values(Role)),
+//   validateRequest(updateBookingStatusZodSchema),
+//   BookingController.updateBookingStatus
+// );
