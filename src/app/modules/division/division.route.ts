@@ -8,26 +8,24 @@ import {
   updateDivisionSchema,
 } from "./division.validation";
 
-const router = Router();
+export const DivisionRoutes = Router();
 
-router.post(
+DivisionRoutes.post(
   "/create",
   checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
   validateRequest(createDivisionSchema),
   DivisionController.createDivision
 );
-router.get("/", DivisionController.getAllDivisions);
-router.get("/:slug", DivisionController.getSingleDivision);
-router.patch(
+DivisionRoutes.get("/", DivisionController.getAllDivisions);
+DivisionRoutes.get("/:slug", DivisionController.getSingleDivision);
+DivisionRoutes.patch(
   "/:id",
   checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
   validateRequest(updateDivisionSchema),
   DivisionController.updateDivision
 );
-router.delete(
+DivisionRoutes.delete(
   "/:id",
   checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
   DivisionController.deleteDivision
 );
-
-export const DivisionRoutes = router;
