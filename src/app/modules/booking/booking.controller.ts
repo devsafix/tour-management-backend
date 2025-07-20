@@ -1,16 +1,17 @@
 import { Request, Response } from "express";
-// import catchAsync from "../utils/catchAsync";
 import { JwtPayload } from "jsonwebtoken";
 import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
-import { BookingService } from "./booking.service";
+import { bookingServices } from "./booking.service";
 
 const createBooking = catchAsync(async (req: Request, res: Response) => {
   const decodeToken = req.user as JwtPayload;
-  const booking = await BookingService.createBooking(
+
+  const booking = await bookingServices.createBooking(
     req.body,
     decodeToken.userId
   );
+
   sendResponse(res, {
     statusCode: 201,
     success: true,
@@ -20,7 +21,7 @@ const createBooking = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getUserBookings = catchAsync(async (req: Request, res: Response) => {
-  const bookings = await BookingService.getUserBookings();
+  const bookings = await bookingServices.getUserBookings();
   sendResponse(res, {
     statusCode: 200,
     success: true,
@@ -28,8 +29,9 @@ const getUserBookings = catchAsync(async (req: Request, res: Response) => {
     data: bookings,
   });
 });
+
 const getSingleBooking = catchAsync(async (req: Request, res: Response) => {
-  const booking = await BookingService.getBookingById();
+  const booking = await bookingServices.getBookingById();
   sendResponse(res, {
     statusCode: 200,
     success: true,
@@ -40,7 +42,7 @@ const getSingleBooking = catchAsync(async (req: Request, res: Response) => {
 
 const getAllBookings = catchAsync(async (req: Request, res: Response) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const bookings = await BookingService.getAllBookings();
+  const bookings = await bookingServices.getAllBookings();
   sendResponse(res, {
     statusCode: 200,
     success: true,
@@ -51,7 +53,7 @@ const getAllBookings = catchAsync(async (req: Request, res: Response) => {
 });
 
 const updateBookingStatus = catchAsync(async (req: Request, res: Response) => {
-  const updated = await BookingService.updateBookingStatus();
+  const updated = await bookingServices.updateBookingStatus();
   sendResponse(res, {
     statusCode: 200,
     success: true,

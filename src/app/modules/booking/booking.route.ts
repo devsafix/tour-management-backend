@@ -6,7 +6,7 @@ import { Role } from "../user/user.interface";
 import { BookingController } from "./booking.controller";
 import {
   createBookingZodSchema,
-  updateBookingStatusZodSchema,
+  //   updateBookingStatusZodSchema,
 } from "./booking.validation";
 
 export const BookingRoutes = express.Router();
