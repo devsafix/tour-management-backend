@@ -8,6 +8,7 @@ import {
   createTourZodSchema,
   updateTourZodSchema,
 } from "./tour.validation";
+import { multerUpload } from "../../config/multer.config";
 
 export const TourRoutes = express.Router();
 
@@ -40,6 +41,7 @@ TourRoutes.get("/", TourController.getAllTours);
 TourRoutes.post(
   "/create",
   checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
+  multerUpload.array("files"),
   validateRequest(createTourZodSchema),
   TourController.createTour
 );
