@@ -9,6 +9,9 @@ export const validateRequest = (schema: ZodSchema<any>) => {
     next: NextFunction
   ): Promise<void> => {
     try {
+      if (req.body.data) {
+        req.body = JSON.parse(req.body.data);
+      }
       req.body = await schema.parseAsync(req.body);
       next();
     } catch (error) {
