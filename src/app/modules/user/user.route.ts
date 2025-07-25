@@ -14,6 +14,16 @@ UserRoutes.post(
   UserControllers.createUser
 );
 
+// Get single login user
+UserRoutes.get("/me", checkAuth(...Object.values(Role)), UserControllers.getMe);
+
+// Get single user
+UserRoutes.get(
+  "/:id",
+  checkAuth(...Object.values(Role)),
+  UserControllers.getSingleUser
+);
+
 // Fetch all users
 UserRoutes.get(
   "/all-users",

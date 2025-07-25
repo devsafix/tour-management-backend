@@ -32,7 +32,7 @@ const updateUser = catchAsync(
     const user = await UserServices.updateUserService(
       userId,
       payload,
-      verifiedToken
+      verifiedToken as JwtPayload
     );
 
     sendResponse(res, {
@@ -46,7 +46,9 @@ const updateUser = catchAsync(
 
 const getAllUser = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const result = await UserServices.getAllUsersService();
+    const result = await UserServices.getAllUsersService(
+      req.query as Record<string, string>
+    );
 
     sendResponse(res, {
       statusCode: httpStatus.CREATED,
@@ -58,8 +60,37 @@ const getAllUser = catchAsync(
   }
 );
 
+const getSingleUser = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id;
+    const result = await UserServices.getSingleUserService(id);
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.CREATED,
+      message: "User Retrieved Successfully",
+      data: result.data,
+    });
+  }
+);
+
+const getMe = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const decodedToken = req.user as JwtPayload;
+    const result = await UserServices.getMeService(decodedToken.userId);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.CREATED,
+      message: "Your profile Retrieved Successfully",
+      data: result.data,
+    });
+  }
+);
+
 export const UserControllers = {
   createUser,
   getAllUser,
   updateUser,
+  getSingleUser,
+  getMe,
 };
