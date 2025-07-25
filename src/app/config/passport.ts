@@ -6,7 +6,7 @@ import {
   VerifyCallback,
 } from "passport-google-oauth20";
 import { Strategy as LocalStrategy } from "passport-local";
-import { Role } from "../modules/user/user.interface";
+import { IsActive, Role } from "../modules/user/user.interface";
 import { User } from "../modules/user/user.model";
 import { envVariables } from "./env";
 import bcryptjs from "bcryptjs";
@@ -23,6 +23,20 @@ passport.use(
 
         if (!isUserExist) {
           return done("User does not exist");
+        }
+
+        if (!isUserExist.isVerified) {
+          return done("User is not verified");
+        }
+
+        if (
+          isUserExist.isActive === IsActive.BLOCKED ||
+          isUserExist.isActive === IsActive.INACTIVE
+        ) {
+          return done(`User is ${isUserExist.isActive}`);
+        }
+        if (isUserExist.isDeleted) {
+          return done("User is deleted");
         }
 
         const isGoogleAuthenticated = isUserExist.auths.some(
@@ -73,10 +87,26 @@ passport.use(
           return done(null, false, { message: "No email found" });
         }
 
-        let user = await User.findOne({ email });
+        let isUserExist = await User.findOne({ email });
 
-        if (!user) {
-          user = await User.create({
+        if (isUserExist && !isUserExist.isVerified) {
+          return done(null, false, { message: "User is not verified" });
+        }
+
+        if (
+          isUserExist &&
+          (isUserExist.isActive === IsActive.BLOCKED ||
+            isUserExist.isActive === IsActive.INACTIVE)
+        ) {
+          return done(`User is ${isUserExist.isActive}`);
+        }
+
+        if (isUserExist && isUserExist.isDeleted) {
+          return done(null, false, { message: "User is deleted" });
+        }
+
+        if (!isUserExist) {
+          isUserExist = await User.create({
             email,
             name: profile.displayName,
             picture: profile.photos?.[0].value,
@@ -91,7 +121,7 @@ passport.use(
           });
         }
 
-        return done(null, user);
+        return done(null, isUserExist);
       } catch (error) {
         return done(error);
       }
