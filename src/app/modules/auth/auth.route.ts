@@ -19,6 +19,11 @@ AuthRoutes.post(
   checkAuth(...Object.values(Role)),
   AuthControllers.resetPassword
 );
+AuthRoutes.post(
+  "/set-password",
+  checkAuth(...Object.values(Role)),
+  AuthControllers.setPassword
+);
 AuthRoutes.get(
   "/google",
   async (req: Request, res: Response, next: NextFunction) => {

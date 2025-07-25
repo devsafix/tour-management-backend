@@ -7,6 +7,7 @@ import bcryptjs from "bcryptjs";
 import { createNewAccessTokenWithRefreshToken } from "../../utils/userTokens";
 import { JwtPayload } from "jsonwebtoken";
 import { envVariables } from "../../config/env";
+import { IAuthProvider } from "../user/user.interface";
 
 const getNewAccessTokenService = async (refreshToken: string) => {
   const newAccessToken = await createNewAccessTokenWithRefreshToken(
@@ -64,8 +65,45 @@ const resetPasswordServices = async (
   await isUserExist.save();
 };
 
+const setPasswordServices = async (userId: string, plainPassword: string) => {
+  const user = await User.findById(userId);
+
+  if (!user) {
+    throw new AppError(404, "User not found");
+  }
+
+  if (
+    user.password &&
+    user.auths.some((providerObject) => providerObject.provider === "google")
+  ) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "You have already set you password. Now you can change the password from your profile password update"
+    );
+  }
+
+  const hashedPassword = await bcryptjs.hash(
+    plainPassword,
+    Number(envVariables.BCRYPT_SALT_ROUND)
+  );
+
+  const credentialProvider: IAuthProvider = {
+    provider: "credentials",
+    providerId: user.email,
+  };
+
+  const auths: IAuthProvider[] = [...user.auths, credentialProvider];
+
+  user.password = hashedPassword;
+
+  user.auths = auths;
+
+  await user.save();
+};
+
 export const AuthServices = {
   getNewAccessTokenService,
   resetPasswordServices,
   changePasswordServices,
+  setPasswordServices,
 };
