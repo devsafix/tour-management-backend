@@ -10,6 +10,11 @@ AuthRoutes.post("/login", AuthControllers.credentialsLogin);
 AuthRoutes.post("/refresh-token", AuthControllers.getNewAccessToken);
 AuthRoutes.post("/logout", AuthControllers.logout);
 AuthRoutes.post(
+  "/change-password",
+  checkAuth(...Object.values(Role)),
+  AuthControllers.changePassword
+);
+AuthRoutes.post(
   "/reset-password",
   checkAuth(...Object.values(Role)),
   AuthControllers.resetPassword

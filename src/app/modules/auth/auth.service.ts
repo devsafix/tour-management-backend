@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import AppError from "../../errorHelpers/AppError";
 import { User } from "../user/user.model";
@@ -17,16 +18,12 @@ const getNewAccessTokenService = async (refreshToken: string) => {
   };
 };
 
-const resetPasswordServices = async (
+const changePasswordServices = async (
   oldPassword: string,
   newPassword: string,
   decodedToken: JwtPayload
 ) => {
   const user = await User.findById(decodedToken.userId);
-
-  if (!user) {
-    throw new AppError(httpStatus.NOT_FOUND, "User not found");
-  }
 
   const isOldPasswordMatch = await bcryptjs.compare(
     oldPassword,
@@ -44,7 +41,31 @@ const resetPasswordServices = async (
   user!.save();
 };
 
+const resetPasswordServices = async (
+  payload: Record<string, any>,
+  decodedToken: JwtPayload
+) => {
+  if (payload.id != decodedToken.userId) {
+    throw new AppError(401, "You can not reset your password");
+  }
+
+  const isUserExist = await User.findById(decodedToken.userId);
+  if (!isUserExist) {
+    throw new AppError(401, "User does not exist");
+  }
+
+  const hashedPassword = await bcryptjs.hash(
+    payload.newPassword,
+    Number(envVariables.BCRYPT_SALT_ROUND)
+  );
+
+  isUserExist.password = hashedPassword;
+
+  await isUserExist.save();
+};
+
 export const AuthServices = {
   getNewAccessTokenService,
   resetPasswordServices,
+  changePasswordServices,
 };
