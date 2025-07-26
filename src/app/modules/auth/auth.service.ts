@@ -5,9 +5,10 @@ import { User } from "../user/user.model";
 import httpStatus from "http-status-codes";
 import bcryptjs from "bcryptjs";
 import { createNewAccessTokenWithRefreshToken } from "../../utils/userTokens";
-import { JwtPayload } from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import { envVariables } from "../../config/env";
-import { IAuthProvider } from "../user/user.interface";
+import { IAuthProvider, IsActive } from "../user/user.interface";
+import { sendEmail } from "../../utils/sendEmail";
 
 const getNewAccessTokenService = async (refreshToken: string) => {
   const newAccessToken = await createNewAccessTokenWithRefreshToken(
@@ -65,6 +66,51 @@ const resetPasswordServices = async (
   await isUserExist.save();
 };
 
+const forgotPasswordServices = async (email: string) => {
+  const isUserExist = await User.findOne({ email });
+
+  if (!isUserExist) {
+    throw new AppError(httpStatus.BAD_REQUEST, "User does not exist");
+  }
+  if (!isUserExist.isVerified) {
+    throw new AppError(httpStatus.BAD_REQUEST, "User is not verified");
+  }
+  if (
+    isUserExist.isActive === IsActive.BLOCKED ||
+    isUserExist.isActive === IsActive.INACTIVE
+  ) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      `User is ${isUserExist.isActive}`
+    );
+  }
+  if (isUserExist.isDeleted) {
+    throw new AppError(httpStatus.BAD_REQUEST, "User is deleted");
+  }
+
+  const jwtPayload = {
+    userId: isUserExist._id,
+    email: isUserExist.email,
+    role: isUserExist.role,
+  };
+
+  const resetToken = jwt.sign(jwtPayload, envVariables.JWT_ACCESS_SECRET, {
+    expiresIn: "10m",
+  });
+
+  const resetUILink = `${envVariables.FRONTEND_URL}/reset-password?id=${isUserExist._id}&token=${resetToken}`;
+
+  sendEmail({
+    to: isUserExist.email,
+    subject: "Password Reset",
+    templateName: "forgetPassword",
+    templateData: {
+      name: isUserExist.name,
+      resetUILink,
+    },
+  });
+};
+
 const setPasswordServices = async (userId: string, plainPassword: string) => {
   const user = await User.findById(userId);
 
@@ -106,4 +152,5 @@ export const AuthServices = {
   resetPasswordServices,
   changePasswordServices,
   setPasswordServices,
+  forgotPasswordServices,
 };

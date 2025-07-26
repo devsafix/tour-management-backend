@@ -20,6 +20,7 @@ AuthRoutes.post(
   checkAuth(...Object.values(Role)),
   AuthControllers.resetPassword
 );
+AuthRoutes.post("/forgot-password", AuthControllers.forgotPassword);
 AuthRoutes.post(
   "/set-password",
   checkAuth(...Object.values(Role)),
