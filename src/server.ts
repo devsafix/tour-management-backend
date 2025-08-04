@@ -6,6 +6,7 @@ import app from "./app";
 import { Server } from "http";
 import { envVariables } from "./app/config/env";
 import { seedSuperAdmin } from "./app/utils/seedSuperAdmin";
+import { connectRedis } from "./app/config/redis.config";
 
 dotenv.config();
 const port = envVariables.PORT || 5000;
@@ -14,7 +15,7 @@ let server: Server;
 async function startServer() {
   try {
     await mongoose.connect(envVariables.DATABASE_URL);
-    console.log("✅ Database connected");
+    console.log("Database connected");
     server = app.listen(port, () => {
       console.log(`Server running on port ${port}`);
     });
@@ -24,6 +25,7 @@ async function startServer() {
 }
 
 (async () => {
+  await connectRedis();
   await startServer();
   await seedSuperAdmin();
 })();
