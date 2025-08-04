@@ -13,7 +13,7 @@ export interface IInvoiceData {
 
 export const generatePdf = async (
   invoiceData: IInvoiceData
-): Promise<Buffer<ArrayBufferLike>> => {
+): Promise<Buffer> => {
   try {
     return new Promise((resolve, reject) => {
       const doc = new PDFDocument({ size: "A4", margin: 50 });
@@ -23,25 +23,53 @@ export const generatePdf = async (
       doc.on("end", () => resolve(Buffer.concat(buffer)));
       doc.on("error", (err) => reject(err));
 
-      //PDF Content
-      doc.fontSize(20).text("Invoice", { align: "center" });
-      doc.moveDown();
-      doc.fontSize(14).text(`Transaction ID : ${invoiceData.transactionId}`);
-      doc.text(`Booking Date : ${invoiceData.bookingDate}`);
-      doc.text(`Customer : ${invoiceData.userName}`);
+      // Header
+      doc
+        .fontSize(26)
+        .fillColor("#0033cc")
+        .text("INVOICE", { align: "center" });
 
-      doc.moveDown();
+      doc.moveDown(1.5);
+      doc
+        .strokeColor("#cccccc")
+        .lineWidth(1)
+        .moveTo(50, doc.y)
+        .lineTo(545, doc.y)
+        .stroke();
 
+      doc.moveDown(1.5);
+
+      // Invoice Info
+      doc.fontSize(14).fillColor("#000");
+      doc.text(`Transaction ID: ${invoiceData.transactionId}`);
+      doc.text(`Booking Date: ${invoiceData.bookingDate.toDateString()}`);
+      doc.text(`Customer Name: ${invoiceData.userName}`);
+
+      doc.moveDown(1.5);
+
+      // Booking Summary
+      doc
+        .fontSize(16)
+        .fillColor("#0033cc")
+        .text("Booking Summary", { underline: true });
+
+      doc.moveDown(0.5);
+      doc.fontSize(14).fillColor("#000");
       doc.text(`Tour: ${invoiceData.tourTitle}`);
-      doc.text(`Guests: ${invoiceData.guestCount}`);
+      doc.text(`Guest Count: ${invoiceData.guestCount}`);
       doc.text(`Total Amount: $${invoiceData.totalAmount.toFixed(2)}`);
-      doc.moveDown();
 
-      doc.text("Thank you for booking with us!", { align: "center" });
+      doc.moveDown(2);
+
+      // Thank you message
+      doc
+        .fontSize(14)
+        .fillColor("#555")
+        .text("Thank you for booking with us!", { align: "center" });
 
       doc.end();
     });
   } catch (error: any) {
-    throw new AppError(401, `Pdf creation error ${error.message}`);
+    throw new AppError(401, `PDF creation error: ${error.message}`);
   }
 };
