@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Invoice Confirmation</title>
+  </head>
+  <body
+    style="
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f4f4f7;
+      color: #333;
+    "
+  >
+    <div
+      style="
+        max-width: 600px;
+        margin: 40px auto;
+        background-color: #ffffff;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+      "
+    >
+      <div style="padding: 32px">
+        <h1 style="font-size: 26px; color: #333333; margin-bottom: 16px">
+          Invoice for Booking
+        </h1>
+
+        <p style="font-size: 16px; margin-bottom: 8px">
+          <strong>Payment ID:</strong> <%= paymentId %>
+        </p>
+        <p style="font-size: 16px; margin-bottom: 24px">
+          <strong>Amount Paid:</strong> <%= amount %> BDT
+        </p>
+
+        <p style="font-size: 16px; margin-bottom: 32px">
+          Thank you for your booking! We appreciate your business.
+        </p>
+
+        <div style="text-align: center; margin: 24px 0">
+          <a
+            href="<%= pdfLink %>"
+            style="
+              display: inline-block;
+              background-color: #0033cc;
+              color: #ffffff;
+              font-size: 16px;
+              font-weight: 500;
+              padding: 12px 24px;
+              border-radius: 6px;
+              text-decoration: none;
+            "
+          >
+            Download Invoice PDF
+          </a>
+        </div>
+
+        <p style="font-size: 14px; color: #999999; margin-top: 40px">
+          — https://devsafix.vercel.app
+        </p>
+      </div>
+    </div>
+  </body>
+</html>
