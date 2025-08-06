@@ -32,14 +32,6 @@ export const updateUserZodSchema = z.object({
     .min(2, { message: "Name must be longer than 2 characters" })
     .max(50, { message: "Name cannot be exceed 50 characters" })
     .optional(),
-  password: z
-    .string()
-    .min(8)
-    .regex(/^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/, {
-      message:
-        "Password must contain at least 1 uppercase letter, 1 number, 1 special character, and be at least 8 characters long",
-    })
-    .optional(),
   phone: z
     .string({ invalid_type_error: "Phone number must be string" })
     .regex(/^(?:\+88|88)?01[3-9]\d{8}$/, {
@@ -55,7 +47,7 @@ export const updateUserZodSchema = z.object({
     .boolean({ invalid_type_error: "isVerified must be true or false" })
     .optional(),
 
-  address: z 
+  address: z
     .string({ invalid_type_error: "Address must be string" })
     .max(200, { message: "Address cannot be exceed 200 characters" })
     .optional(),
